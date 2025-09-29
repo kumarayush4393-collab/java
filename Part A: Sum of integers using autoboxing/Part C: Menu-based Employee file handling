@@ -1,0 +1,115 @@
+import java.io.*;
+import java.util.Scanner;
+
+class Employee implements Serializable {
+    private String name;
+    private int id;
+    private String designation;
+    private double salary;
+
+    public Employee(String name, int id, String designation, double salary) {
+        this.name = name;
+        this.id = id;
+        this.designation = designation;
+        this.salary = salary;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + ", Name: " + name + ", Designation: " + designation + ", Salary: " + salary;
+    }
+}
+
+public class EmployeeManagement {
+
+    private static final String FILE_NAME = "employees.dat";
+
+    public static void addEmployee(Employee emp) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream(FILE_NAME, true) {
+                    @Override
+                    protected void writeStreamHeader() throws IOException {
+                        // Do not write header if file exists
+                        if (new File(FILE_NAME).length() == 0) {
+                            super.writeStreamHeader();
+                        } else {
+                            reset();
+                        }
+                    }
+                }
+        )) {
+            oos.writeObject(emp);
+            System.out.println("Employee added successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void displayAllEmployees() {
+        File file = new File(FILE_NAME);
+        if (!file.exists() || file.length() == 0) {
+            System.out.println("No employee records found.");
+            return;
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            while (true) {
+                try {
+                    Employee emp = (Employee) ois.readObject();
+                    System.out.println(emp);
+                } catch (EOFException e) {
+                    break; // End of file
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int choice;
+
+        do {
+            System.out.println("\nMenu:");
+            System.out.println("1. Add an Employee");
+            System.out.println("2. Display All Employees");
+            System.out.println("3. Exit");
+            System.out.print("Enter choice: ");
+            choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter employee name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Enter employee id: ");
+                    int id = sc.nextInt();
+                    sc.nextLine(); // consume newline
+                    System.out.print("Enter designation: ");
+                    String desig = sc.nextLine();
+                    System.out.print("Enter salary: ");
+                    double salary = sc.nextDouble();
+                    sc.nextLine();
+
+                    Employee emp = new Employee(name, id, desig, salary);
+                    addEmployee(emp);
+                    break;
+
+                case 2:
+                    displayAllEmployees();
+                    break;
+
+                case 3:
+                    System.out.println("Exiting...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice! Try again.");
+            }
+
+        } while (choice != 3);
+
+        sc.close();
+    }
+}
