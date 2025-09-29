@@ -1,0 +1,28 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class AutoboxingExample {
+
+    // Method to calculate sum
+    public static int sumList(List<Integer> list) {
+        int sum = 0;
+        for (Integer num : list) { // unboxing happens automatically
+            sum += num;
+        }
+        return sum;
+    }
+
+    public static void main(String[] args) {
+        String[] strNumbers = {"10", "20", "30", "40"};
+
+        List<Integer> numbers = new ArrayList<>();
+
+        // Parse strings to Integer (autoboxing happens)
+        for (String s : strNumbers) {
+            numbers.add(Integer.parseInt(s)); // parseInt returns int -> autoboxed to Integer
+        }
+
+        int total = sumList(numbers);
+        System.out.println("Sum of numbers: " + total);
+    }
+}
