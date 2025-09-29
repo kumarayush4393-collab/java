@@ -1,0 +1,41 @@
+import java.io.*;
+
+// Student class must implement Serializable
+class Student implements Serializable {
+    private String name;
+    private int rollNo;
+    private double marks;
+
+    public Student(String name, int rollNo, double marks) {
+        this.name = name;
+        this.rollNo = rollNo;
+        this.marks = marks;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + ", RollNo: " + rollNo + ", Marks: " + marks;
+    }
+}
+
+public class SerializationExample {
+    public static void main(String[] args) {
+        Student student = new Student("Alice", 101, 95.5);
+
+        // Serialize
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("student.ser"))) {
+            oos.writeObject(student);
+            System.out.println("Student serialized successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Deserialize
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("student.ser"))) {
+            Student deserialized = (Student) ois.readObject();
+            System.out.println("Deserialized student: " + deserialized);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}
