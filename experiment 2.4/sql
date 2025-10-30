@@ -1,0 +1,9 @@
+CREATE DATABASE companydb;
+USE companydb;
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Salary DOUBLE
+);
+
+INSERT INTO Employee VALUES (1, 'Aarav', 45000), (2, 'Ritika', 55000), (3, 'Sohan', 60000);
